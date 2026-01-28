@@ -2,14 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; URL='https://qikseek.vokounvojta03.workers.dev/'" />
   <title>Redirecting...</title>
   <script>
-    // Fallback in case meta refresh doesn't work
-    window.location.href = "https://qikseek.vokounvojta03.workers.dev/";
+    // Base URL of your worker
+    const baseURL = "https://qikseek.vokounvojta03.workers.dev";
+
+    // Get current path + query
+    const path = window.location.pathname + window.location.search;
+
+    // Redirect to the worker with the same path + query
+    window.location.href = baseURL + path;
   </script>
+  <!-- Fallback for non-JS browsers -->
+  <noscript>
+    <meta http-equiv="refresh" content="0; URL='https://qikseek.vokounvojta03.workers.dev'" />
+  </noscript>
 </head>
 <body>
-  <p>Redirecting to <a href="https://qikseek.vokounvojta03.workers.dev/">https://qikseek.vokounvojta03.workers.dev/</a>...</p>
+  <p>
+    Redirecting to <a id="redirect-link" href="https://qikseek.vokounvojta03.workers.dev">your destination</a>...
+  </p>
+  <script>
+    // Update the link text to show full path
+    document.getElementById("redirect-link").href = baseURL + path;
+    document.getElementById("redirect-link").textContent = baseURL + path;
+  </script>
 </body>
 </html>
