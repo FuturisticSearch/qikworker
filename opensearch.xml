@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Qik Seek</ShortName>
+  <LongName>Qik Seek – Fast Modern Web Search</LongName>
+  <Description>Qik Seek – fast modern web search.</Description>
+
+  <!-- Supported languages -->
+  <Language>cs</Language>
+  <Language>en</Language>
+
+  <Tags>search web qikseek</Tags>
+  <Developer>Qik Seek Team</Developer>
+
+  <!-- Site favicon -->
+  <Image height="16" width="16" type="image/png">/favicon.png</Image>
+
+  <!-- URL template with placeholder for search terms -->
+  <Url type="text/html" template="https://qikworker.pages.dev/?q={searchTerms}"/>
+
+  <!-- Default search form page -->
+  <SearchForm>/</SearchForm>
+  
+  <!-- Example query -->
+  <Query role="example" searchTerms="cats"/>
+
+  <!-- Character encodings -->
+  <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+
+  <!-- Mozilla-specific search form -->
+  <moz:SearchForm xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <moz:SearchForm>/</moz:SearchForm>
+    <moz:SearchEngine name="Qik Seek" keyword="@qik"/>
+  </moz:SearchForm>
+</OpenSearchDescription>
