@@ -20,48 +20,45 @@
 <body>
   <div id="status">Connecting…</div>
 
-  <script>
-    const hosts = [
-      'https://1.qikseek.eu.org',      // Primary
-      'https://2.qikseek.eu.org',      // Backup 1
-      'https://3.qikseek.eu.org',      // Backup 2
-      'https://qikseek.pages.dev',     // Primary
-      'https://qikseek.onrender.com',  // Backup 1
-      'https://qikseek.netlify.app'    // Backup 2
-    ];
+<script>
+(async () => {
+  // Hosts in order
+  const hosts = [
+    'https://1.qikseek.eu.org',      // Primary 1
+    'https://2.qikseek.eu.org',      // Primary 2
+    'https://3.qikseek.eu.org',      // Primary 3
+    'https://4.qikseek.eu.org',      // Custom 4th backup
+    'https://qikseek.vercel.app',    // Vercel backup
+    'https://qikseek.pages.dev',     // Pages.dev backup
+    'https://qikseek.onrender.com',  // Render backup
+    'https://qikseek.netlify.app'    // Netlify backup
+  ];
 
-    const path = location.pathname + location.search;
+  const path = window.location.pathname + window.location.search;
 
-    async function tryHosts() {
-      for (const host of hosts) {
-        try {
-          // HEAD is fast and light
-          const res = await fetch(host + path, {
-            method: 'HEAD',
-            mode: 'no-cors'
-          });
+  let success = false;
 
-          // If fetch didn't throw, assume it's up
-          location.replace(host + path);
-          return;
-        } catch (e) {
-          // Try next host
-        }
+  for (const host of hosts) {
+    try {
+      const res = await fetch(host + path, { redirect: 'manual' });
+      if (res.ok || res.status === 301 || res.status === 302) {
+        const text = await res.text();
+        // Replace body with fetched content
+        document.open();
+        document.write(text);
+        document.close();
+        success = true;
+        break; // Stop after first successful host
       }
-
-      document.getElementById('status').innerHTML = `
-        <h2>All backups are down</h2>
-        <p>Please try again later.</p>
-        <p>
-          Contact:
-          <a href="mailto:futuresearchapi@gmail.com" style="color:#6cf">
-            futuresearchapi@gmail.com
-          </a>
-        </p>
-      `;
+    } catch (e) {
+      console.warn(`Failed host ${host}:`, e);
     }
+  }
 
-    tryHosts();
-  </script>
+  if (!success) {
+    document.body.innerHTML = '<h1>All backends are currently unavailable. Please try again later.</h1>';
+  }
+})();
+</script>
 </body>
 </html>
