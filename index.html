@@ -1,85 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Redirecting...</title>
-<script>addEventListener('fetch', event => {
-  
-  event.respondWith(handleRequest(event.request))
-  
-})
-  
-
-  
-const hosts = [
-  
-  'https://1.qikseek.eu.org', //Primary
-  
-  'https://2.qikseek.eu.org', //Backup 1
-  
-  'https://3.qikseek.eu.org', //backup 2
-  
-  'https://qikseek.pages.dev',  // Primary
-  
-  'https://qikseek.onrender.com', // Backup 1
-  
-  'https://qikseek.netlify.app',  // Backup 2
-  
-
-  
-]
-  
-
-  
-async function handleRequest(request) {
-  
-  const url = new URL(request.url)
-  
-  const path = url.pathname + url.search
-  
-
-  
-  for (const host of hosts) {
-  
-    try {
-  
-      const res = await fetch(host + path, { redirect: 'manual' })
-  
-      if (res.ok || res.status === 301 || res.status === 302) {
-  
-        // Stream content but override Location headers so URL stays the same
-  
-        const newHeaders = new Headers(res.headers)
-  
-        newHeaders.set('Access-Control-Allow-Origin', '*')
-  
-        newHeaders.delete('Location') // Remove any redirect
-  
-        return new Response(res.body, {
-  
-          status: res.status >= 300 && res.status < 400 ? 200 : res.status,
-  
-          headers: newHeaders
-  
-        })
-  
-      }
-  
-    } catch (e) {
-  
-      // Host failed, try next one
-  
+  <meta charset="UTF-8" />
+  <title>QikSeek – Loading…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
     }
-  
-  }
-  
+  </style>
+</head>
+<body>
+  <div id="status">Connecting…</div>
 
-  
-  // All hosts failed
-  
-  return new Response('All backups are down, try again later or contact the website administrtator futuresearchapi@gmail.com', { status: 503 })
-  
-}
-</script>
+  <script>
+    const hosts = [
+      'https://1.qikseek.eu.org',      // Primary
+      'https://2.qikseek.eu.org',      // Backup 1
+      'https://3.qikseek.eu.org',      // Backup 2
+      'https://qikseek.pages.dev',     // Primary
+      'https://qikseek.onrender.com',  // Backup 1
+      'https://qikseek.netlify.app'    // Backup 2
+    ];
+
+    const path = location.pathname + location.search;
+
+    async function tryHosts() {
+      for (const host of hosts) {
+        try {
+          // HEAD is fast and light
+          const res = await fetch(host + path, {
+            method: 'HEAD',
+            mode: 'no-cors'
+          });
+
+          // If fetch didn't throw, assume it's up
+          location.replace(host + path);
+          return;
+        } catch (e) {
+          // Try next host
+        }
+      }
+
+      document.getElementById('status').innerHTML = `
+        <h2>All backups are down</h2>
+        <p>Please try again later.</p>
+        <p>
+          Contact:
+          <a href="mailto:futuresearchapi@gmail.com" style="color:#6cf">
+            futuresearchapi@gmail.com
+          </a>
+        </p>
+      `;
+    }
+
+    tryHosts();
+  </script>
 </body>
 </html>
