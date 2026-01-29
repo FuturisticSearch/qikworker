@@ -3,29 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <title>Redirecting...</title>
-  <script>
-    // Base URL of your worker
-    const baseURL = "https://qikseek.vokounvojta03.workers.dev";
+<script>addEventListener('fetch', event => {
+  
+  event.respondWith(handleRequest(event.request))
+  
+})
+  
 
-    // Get current path + query
-    const path = window.location.pathname + window.location.search;
+  
+const hosts = [
+  
+  'https://1.qikseek.eu.org', //Primary
+  
+  'https://2.qikseek.eu.org', //Backup 1
+  
+  'https://3.qikseek.eu.org', //backup 2
+  
+  'https://qikseek.pages.dev',  // Primary
+  
+  'https://qikseek.onrender.com', // Backup 1
+  
+  'https://qikseek.netlify.app',  // Backup 2
+  
 
-    // Redirect to the worker with the same path + query
-    window.location.href = baseURL + path;
-  </script>
-  <!-- Fallback for non-JS browsers -->
-  <noscript>
-    <meta http-equiv="refresh" content="0; URL='https://qikseek.vokounvojta03.workers.dev'" />
-  </noscript>
-</head>
-<body>
-  <p>
-    Redirecting to <a id="redirect-link" href="https://qikseek.vokounvojta03.workers.dev">your destination</a>...
-  </p>
-  <script>
-    // Update the link text to show full path
-    document.getElementById("redirect-link").href = baseURL + path;
-    document.getElementById("redirect-link").textContent = baseURL + path;
-  </script>
+  
+]
+  
+
+  
+async function handleRequest(request) {
+  
+  const url = new URL(request.url)
+  
+  const path = url.pathname + url.search
+  
+
+  
+  for (const host of hosts) {
+  
+    try {
+  
+      const res = await fetch(host + path, { redirect: 'manual' })
+  
+      if (res.ok || res.status === 301 || res.status === 302) {
+  
+        // Stream content but override Location headers so URL stays the same
+  
+        const newHeaders = new Headers(res.headers)
+  
+        newHeaders.set('Access-Control-Allow-Origin', '*')
+  
+        newHeaders.delete('Location') // Remove any redirect
+  
+        return new Response(res.body, {
+  
+          status: res.status >= 300 && res.status < 400 ? 200 : res.status,
+  
+          headers: newHeaders
+  
+        })
+  
+      }
+  
+    } catch (e) {
+  
+      // Host failed, try next one
+  
+    }
+  
+  }
+  
+
+  
+  // All hosts failed
+  
+  return new Response('All backups are down, try again later or contact the website administrtator futuresearchapi@gmail.com', { status: 503 })
+  
+}
+</script>
 </body>
 </html>
