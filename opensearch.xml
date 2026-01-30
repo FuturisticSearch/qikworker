@@ -18,7 +18,7 @@
   <Url type="text/html" template="https://qikseek.pages.dev/home/?q={searchTerms}"/>
 
   <!-- Default search form page -->
-  <SearchForm>/</SearchForm>
+  <SearchForm>qikseek.pages.dev/home</SearchForm>
   
   <!-- Example query -->
   <Query role="example" searchTerms="cats"/>
