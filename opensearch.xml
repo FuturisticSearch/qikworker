@@ -15,7 +15,7 @@
   <Image height="16" width="16" type="image/png">/favicon.png</Image>
 
   <!-- URL template with placeholder for search terms -->
-  <Url type="text/html" template="https://qikworker.pages.dev/?q={searchTerms}"/>
+  <Url type="text/html" template="https://qikseek.pages.dev/home/?q={searchTerms}"/>
 
   <!-- Default search form page -->
   <SearchForm>/</SearchForm>
